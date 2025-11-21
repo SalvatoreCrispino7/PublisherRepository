@@ -16,8 +16,10 @@ async def main():
     pub_id = str(pub.inserted_id)
     await books_collection.insert_one({
         "publisher_id": pub_id,
-        "name": 'Libro Mondadori',
-        "year": 2024
+        "title": 'Hunger Games',
+        "author": 'Suzanne Collins',
+        "genre": 'Fantasy',
+        "year": 2008
     })
 
 

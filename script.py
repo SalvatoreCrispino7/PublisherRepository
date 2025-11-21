@@ -68,11 +68,42 @@ class PublisherCasaEditrice(tornado.web.RequestHandler):
     async def delete(self, id):
         await publishers_collection.delete_one({"_id": ObjectId(id)})
 
+
+class PublisherBooks(tornado.web.RequestHandler):
+
+    async def get(self, id_editore):
+        genre = self.get_query_argument("genre", None)
+        author = self.get_query_argument("author", None)
+        title = self.get_query_argument("title", None)
+
+        query = {"publisher_id": id_editore}
+
+        if genre:
+            query["genre"] = genre
+        if author:
+            query["author"] = author
+        if title:
+            query["title"] = title
+
+        result = await books_collection.find(query).to_list()
+
+        for libro in result:
+            libro["_id"] = str(libro["_id"])
+
+        self.set_header("Content-Type", "application/json")
+        self.write(json.dumps({"lista": result}))
+
+
+
+
+
 def make_app():
     return tornado.web.Application([
         (r"/publishers", Publisher),
         (r"/publishers/([0-9a-z]+)", PublisherCasaEditrice),
+        (r"/publishers/([0-9a-z]+)/books", PublisherBooks),
     ])
+
 
 
 async def main(shutdown_event):
