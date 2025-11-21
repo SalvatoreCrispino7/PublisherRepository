@@ -38,7 +38,18 @@ class Publisher(tornado.web.RequestHandler):
         self.set_header("Content-Type", "application/json")
         self.write(json.dumps({"lista": result}))
 
+    async def post(self):
+        data = json.loads(self.request.body)
 
+        nuovo_editore = {
+            "name": data["name"],
+            "founded_year": data["founded_year"],
+            "country": data["country"]
+        }
+
+        result = publishers_collection.insert_one(nuovo_editore)
+
+        self.set_header("Content-Type", "application/json")
 
 def make_app():
     return tornado.web.Application([
