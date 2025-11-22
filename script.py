@@ -120,8 +120,31 @@ class BookHandler(tornado.web.RequestHandler):
             r["_id"] = str(r["_id"])
             self.write(json.dumps({"lista": r}))
 
-    async def post(self, id_editore, id_libro):
+    async def put(self, id_editore, id_libro):
+        data = json.loads(self.request.body)
 
+        aggiorna_libro = {
+        "publisher_id": id_editore,
+        "title": data["title"],
+        "author": data["author"],
+        "genre": data["genre"],
+        "year": 2008
+        }
+
+        r = await books_collection.update_one(
+            {
+            "_id": ObjectId(id_libro),
+            "publisher_id": id_editore,
+            },
+            {"$set":aggiorna_libro}
+        )
+
+    async def delete(self, id_editore, id_libro ):
+        await books_collection.delete_one(
+            {
+            "_id": ObjectId(id_libro),
+            "publisher_id": id_editore,
+            })
 
 
 def make_app():
