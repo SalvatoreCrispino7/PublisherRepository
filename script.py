@@ -107,8 +107,22 @@ class PublisherBooks(tornado.web.RequestHandler):
 
         self.set_header("Content-Type", "application/json")
 
+
 class BookHandler(tornado.web.RequestHandler):
-    async def get(self):
+    async def get(self, id_editore, id_libro):
+        r = await books_collection.find_one(
+            {
+            "_id": ObjectId(id_libro),
+            "publisher_id": id_editore,
+            }
+        )
+        if r:
+            r["_id"] = str(r["_id"])
+            self.write(json.dumps({"lista": r}))
+
+    async def post(self, id_editore, id_libro):
+
+
 
 def make_app():
     return tornado.web.Application([
